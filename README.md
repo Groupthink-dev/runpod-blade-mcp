@@ -4,6 +4,21 @@ A GPU compute MCP server for RunPod. 19 tools for managing GPU pods, serverless 
 
 Implements both the [`virtualmachine-v1`](https://github.com/groupthink-dev/stallari-pack-spec) (pods) and [`serverless-v1`](https://github.com/groupthink-dev/stallari-pack-spec) (endpoints/jobs) service contracts — the first blade to cover both.
 
+## Why another RunPod MCP?
+
+RunPod's own [`@runpod/mcp-server`](https://github.com/runpod/mcp-server) has 43 tools and works fine for direct API access. This blade exists for a different reason: **contract-based GPU orchestration**.
+
+| | `@runpod/mcp-server` | `runpod-blade-mcp` |
+|---|---|---|
+| Tools | 43 (full API surface) | 19 (curated for agent workflows) |
+| Write safety | None — any tool fires immediately | Dual gate: env var + per-call confirm |
+| Response size | Raw API JSON (~2-4k tokens/pod) | Formatted summaries (~800 tokens/pod) |
+| Service contracts | None | `virtualmachine-v1` + `serverless-v1` |
+| Transport | stdio only | stdio + Streamable HTTP |
+| Provider swap | RunPod-specific prompts | Same contract as Vultr, Vast.ai |
+
+If you just need RunPod tools, the official server is simpler. If you're building an agent that provisions GPU compute across providers — or you want safety gates on operations that incur charges — this blade is the better fit.
+
 ## Why Blade MCP?
 
 The `-blade-mcp` suffix identifies this as part of the [Blade MCP](https://github.com/groupthink-dev) family — purpose-built MCP servers with:
