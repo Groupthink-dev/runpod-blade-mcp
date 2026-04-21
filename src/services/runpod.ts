@@ -31,6 +31,35 @@ function authHeaders(): Record<string, string> {
 }
 
 /**
+ * Fetch with 15s timeout and one automatic retry on transient failures.
+ * API errors (non-2xx) are NOT retried — only network/DNS/TLS failures.
+ */
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit
+): Promise<Response> {
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 15_000);
+
+      const res = await fetch(url, { ...options, signal: controller.signal });
+      clearTimeout(timeout);
+      return res;
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      if (attempt === 0) {
+        await new Promise((r) => setTimeout(r, 1_000));
+      }
+    }
+  }
+
+  throw lastError!;
+}
+
+/**
  * Validate the API key by querying the GraphQL myself endpoint.
  */
 export async function validateApiKey(): Promise<{ email: string; id: string }> {
@@ -56,7 +85,7 @@ export async function runpodRest(
     ...(options.headers as Record<string, string> || {}),
   };
 
-  const res = await fetch(url, { ...options, headers });
+  const res = await fetchWithRetry(url, { ...options, headers });
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
@@ -84,7 +113,7 @@ export async function runpodGraphql<T = Record<string, unknown>>(
   query: string,
   variables?: Record<string, unknown>
 ): Promise<T> {
-  const res = await fetch(RUNPOD_GRAPHQL_BASE, {
+  const res = await fetchWithRetry(RUNPOD_GRAPHQL_BASE, {
     method: "POST",
     headers: authHeaders(),
     body: JSON.stringify({ query, ...(variables ? { variables } : {}) }),
@@ -125,7 +154,7 @@ export async function runpodJobs(
     ...(options.headers as Record<string, string> || {}),
   };
 
-  const res = await fetch(url, { ...options, headers });
+  const res = await fetchWithRetry(url, { ...options, headers });
 
   if (!res.ok) {
     const body = await res.text().catch(() => "");
