@@ -1,0 +1,68 @@
+name: runpod-blade-mcp
+version: "0.1.1"
+description: "RunPod GPU compute MCP — pods, serverless endpoints, jobs, templates, billing"
+author: groupthink-dev
+licence: MIT
+tier: certified
+author_type: first-party
+readiness: beta
+contract: virtualmachine-v1
+
+services:
+  vm:
+    list: runpod_pod_list
+    get: runpod_pod_get
+    create: runpod_pod_create
+    delete: runpod_pod_delete
+    start: runpod_pod_start
+    stop: runpod_pod_stop
+    reboot: runpod_pod_restart
+  gpu:
+    types: runpod_gpu_types
+  endpoints:
+    list: runpod_endpoint_list
+    get: runpod_endpoint_get
+    create: runpod_endpoint_create
+    update: runpod_endpoint_update
+    delete: runpod_endpoint_delete
+  jobs:
+    run: runpod_job_run
+    runsync: runpod_job_runsync
+    status: runpod_job_status
+    cancel: runpod_job_cancel
+  billing:
+    account: runpod_account_info
+    templates: runpod_template_list
+
+setup:
+  icon: "🚀"
+  blurb: "RunPod GPU compute — provision pods, manage serverless endpoints, run jobs"
+  auth_model: api_key
+  complexity: simple
+
+install:
+  runtime: node
+  package: runpod-blade-mcp
+  command: runpod-blade-mcp
+
+env:
+  - name: RUNPOD_API_KEY
+    secret: true
+    required: true
+    description: "RunPod API key"
+  - name: RUNPOD_WRITE_ENABLED
+    secret: false
+    required: false
+    description: "Set to 'true' to enable write operations (create, delete, start, stop)"
+  - name: TRANSPORT
+    secret: false
+    required: false
+    description: "stdio (default) or http"
+  - name: MCP_API_TOKEN
+    secret: true
+    required: false
+    description: "Bearer token for HTTP transport auth"
+
+conformance:
+  required: "10/12"
+  last_tested: "2026-04-21"

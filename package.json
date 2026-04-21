@@ -1,6 +1,6 @@
 {
   "name": "runpod-blade-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "RunPod GPU compute MCP server — pods, serverless endpoints, jobs, and GPU inventory with token-efficient defaults",
   "type": "module",
   "main": "dist/index.js",
