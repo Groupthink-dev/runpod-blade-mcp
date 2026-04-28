@@ -1,12 +1,19 @@
 name: runpod-blade-mcp
-version: "0.1.1"
+version: "0.3.0"
 description: "RunPod GPU compute MCP — pods, serverless endpoints, jobs, templates, billing"
-author: groupthink-dev
+author: Groupthink-dev
 license: MIT
 tier: certified
 author_type: first-party
 readiness: beta
-contract: virtualmachine-v1
+homepage: https://github.com/Groupthink-dev/runpod-blade-mcp
+
+# DD-181 Wave 2: virtualmachine-v1 → virtualisation-v1 (DD-157); serverless
+# endpoints + jobs declared under serverless-v1. Conformance reset to untested
+# pending op-by-op mapping against the new contracts.
+contract:
+  - virtualisation-v1
+  - serverless-v1
 
 services:
   vm:
@@ -70,6 +77,18 @@ env:
     required: false
     description: "Set to 'true' to enable write operations (create, delete, start, stop)"
 
+requires:
+  stallari: ">=0.73.4"
+
 conformance:
-  required: "10/12"
-  last_tested: "2026-04-21"
+  virtualisation-v1:
+    required: untested
+    recommended: untested
+    optional: untested
+    gated: untested
+  serverless-v1:
+    required: untested
+    recommended: untested
+    optional: untested
+    gated: untested
+  last_tested: null

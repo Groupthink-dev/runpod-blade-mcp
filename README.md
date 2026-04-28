@@ -2,7 +2,7 @@
 
 A GPU compute MCP server for RunPod. 19 tools for managing GPU pods, serverless endpoints, job queues, and account resources — with token-efficient defaults and dual safety gates on every write operation.
 
-Implements both the [`virtualmachine-v1`](https://github.com/groupthink-dev/stallari-pack-spec) (pods) and [`serverless-v1`](https://github.com/groupthink-dev/stallari-pack-spec) (endpoints/jobs) service contracts — the first blade to cover both.
+Implements both the [`virtualisation-v1`](https://github.com/Groupthink-dev/stallari-pack-spec) (pods) and [`serverless-v1`](https://github.com/Groupthink-dev/stallari-pack-spec) (endpoints/jobs) service contracts — the first blade to cover both.
 
 ## Why another RunPod MCP?
 
@@ -13,7 +13,7 @@ RunPod's own [`@runpod/mcp-server`](https://github.com/runpod/mcp-server) has 43
 | Tools | 43 (full API surface) | 19 (curated for agent workflows) |
 | Write safety | None — any tool fires immediately | Dual gate: env var + per-call confirm |
 | Response size | Raw API JSON (~2-4k tokens/pod) | Formatted summaries (~800 tokens/pod) |
-| Service contracts | None | `virtualmachine-v1` + `serverless-v1` |
+| Service contracts | None | `virtualisation-v1` + `serverless-v1` |
 | Transport | stdio only | stdio + Streamable HTTP |
 | Provider swap | RunPod-specific prompts | Same contract as Vultr, Vast.ai |
 
@@ -21,21 +21,21 @@ If you just need RunPod tools, the official server is simpler. If you're buildin
 
 ## Why Blade MCP?
 
-The `-blade-mcp` suffix identifies this as part of the [Blade MCP](https://github.com/groupthink-dev) family — purpose-built MCP servers with:
+The `-blade-mcp` suffix identifies this as part of the [Blade MCP](https://github.com/Groupthink-dev) family — purpose-built MCP servers with:
 
-- **Service contracts** — implements `virtualmachine-v1` and `serverless-v1` so agentic platforms can swap between GPU providers (Vultr, Vast.ai, RunPod) without rewriting prompts.
+- **Service contracts** — implements `virtualisation-v1` and `serverless-v1` so agentic platforms can swap between GPU providers (Vultr, Vast.ai, RunPod) without rewriting prompts.
 - **Token efficiency** — formatters strip ~60% of raw API response. A pod summary shows GPU model, cost/hr, and uptime — not 50+ fields of metadata.
 - **Dual write gates** — environment variable + per-call confirmation on all destructive operations. Creating pods and submitting jobs incurs charges immediately; accidental invocations are expensive.
 - **Dual transport** — stdio for local use, Streamable HTTP for remote and always-on deployment.
 
-Other blades: [vultr-blade-mcp](https://github.com/groupthink-dev/vultr-blade-mcp) (50 tools), [vastai-blade-mcp](https://github.com/groupthink-dev/vastai-blade-mcp) (16 tools), [cloudflare-blade-mcp](https://github.com/groupthink-dev/cloudflare-blade-mcp) (53 tools), and more.
+Other blades: [vultr-blade-mcp](https://github.com/Groupthink-dev/vultr-blade-mcp) (50 tools), [vastai-blade-mcp](https://github.com/Groupthink-dev/vastai-blade-mcp) (16 tools), [cloudflare-blade-mcp](https://github.com/Groupthink-dev/cloudflare-blade-mcp) (53 tools), and more.
 
 ## Quick Start
 
 ### Install
 
 ```bash
-git clone https://github.com/groupthink-dev/runpod-blade-mcp.git
+git clone https://github.com/Groupthink-dev/runpod-blade-mcp.git
 cd runpod-blade-mcp
 npm install && npm run build
 ```
