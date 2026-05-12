@@ -16,6 +16,30 @@ contract:
   - serverless-v1
 
 services:
+  # Canonical virtualisation-v1 axis (added 2026-05-13 for DD-276 B.5a).
+  # Maps the contract's Required ops to existing runpod_pod_* tools.
+  # RunPod calls VMs "pods" — same concept.
+  # host_info not supported — RunPod abstracts the host node.
+  # workload_status synthesised by the adapter transform from runpod_pod_get
+  # (status field on the pod record) — no dedicated status tool.
+  virtualisation:
+    workload_list: runpod_pod_list
+    workload_get: runpod_pod_get
+    workload_status: runpod_pod_get        # status field within the get response
+
+  # Canonical serverless-v1 axis (added 2026-05-13 for DD-276 B.5b).
+  # Maps the contract's Required ops to existing runpod_endpoint_* + job + template tools.
+  # endpoint_health synthesised by the adapter transform from runpod_endpoint_get
+  # (worker state fields on the endpoint record).
+  serverless:
+    endpoint_list: runpod_endpoint_list
+    endpoint_get: runpod_endpoint_get
+    endpoint_health: runpod_endpoint_get   # worker/queue fields within the get response
+    job_status: runpod_job_status
+    template_list: runpod_template_list
+
+  # Vendor-native axes preserved for callers that consume this blade directly
+  # outside the *-v1 adapters. Same tools, vendor-native key names.
   vm:
     list: runpod_pod_list
     get: runpod_pod_get
